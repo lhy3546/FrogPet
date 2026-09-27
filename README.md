@@ -1,69 +1,54 @@
-# FrogPet — 桌面青蛙宠物 🐸
+# FrogPet 🐸 Windows 桌面青蛙宠物
 
-一只会在桌面上跳来跳去、点了会"呱"的写实树蛙。Windows 桌面宠物，单文件 exe，双击即用。
+![预览](docs/preview.png)
 
-![frog](assets/frog/frog_idle.png)
+一只会在你桌面上跳来跳去、点它会有回应、还能拖着到处放的写实树蛙桌面宠物。
+纯 Python + PySide6 实现，可打包为单文件 exe，双击即用。
 
-## 功能总览
+> **给使用者的一句话说明**：按 `Ctrl+Alt+Q` 退出；彻底卸载运行 `uninstall.bat`。
+> 本程序完全离线运行，不联网、不收集任何数据。
 
-| 功能 | 实现 |
+---
+
+## ✨ 功能特性
+
+| 功能 | 说明 |
 |---|---|
-| 随机跳跃 | 抛物线轨迹、方向距离随机、起跳/腾空/落地三段动画、屏幕边缘自动回避 |
-| 待机动画 | 呼吸起伏、随机眨眼、鼓腮（鸣囊）、接触阴影 |
-| 脚下池塘 | 随身小水塘：岸边、水面渐变、荷叶、石子、环境涟漪；跳跃时留在地面，落地回到池塘 |
-| 水花 | 起跳溅小水花、落地/拖拽放下溅大水花（水珠抛物线 + 扩散涟漪 + 白色水冠），配轻柔"扑通"声 |
-| 鼠标拖拽 | 按住蛙身可拖到任意位置（含跨屏），松手落地缓冲 + 溅水花；按下即抓取、松手若未移动视为点击 |
-| 点击回应 | 气泡文字（呱~/干嘛~/别戳我~…）、轻柔蛙鸣（合成 wav）、转向看鼠标、原地小跳 |
-| 置顶穿透 | 始终在所有窗口上方；透明区域鼠标穿透，只有点到蛙身可交互（池塘也可穿透） |
-| 不打扰 | 无边框、不抢焦点、无任务栏图标、不进 Alt-Tab、无托盘、无任何关闭按钮 |
-| 关闭方式 | **唯一退出方式：全局热键 `Ctrl+Alt+Q`**（任何焦点下都有效） |
-| 开机自启 | 首次运行自动安装到 `%LOCALAPPDATA%\FrogPet` 并写入 `HKCU\...\CurrentVersion\Run` |
-| 多显示器 | 支持；默认在鼠标所在屏活动，偶尔跳去相邻屏幕，拖拽可跨屏搬家 |
-| 隐私安全 | 完全离线、不联网、不收集数据、只写 HKCU（无需管理员权限） |
+| 🏃 随机跳跃 | 抛物线轨迹，方向、距离随机；起跳下蹲 → 腾空伸展 → 落地缓冲三段动画；自动避开屏幕边缘 |
+| 🌿 随身小池塘 | 脚下一汪小水塘：深绿岸边、渐变水面、荷叶、石子、随机泛起的涟漪；跳跃时池塘留在地面，落地正好跳回塘里 |
+| 💦 落水水花 | 起跳溅小水花，落地/放下溅大水花（带重力的水珠 + 扩散涟漪 + 白色水冠），配轻柔的"扑通"声 |
+| 🖱️ 鼠标拖拽 | 按住蛙身拖到任意位置（可跨屏），松手落地缓冲并溅水花；原地点击则触发回应 |
+| 🫧 点击回应 | 弹出气泡文字（呱~ / 干嘛~ / 别戳我~ …）、播放轻柔蛙鸣、转头看你、原地小跳、鼓腮 |
+| 😴 待机动画 | 呼吸起伏、随机眨眼、鼓腮鸣囊、接触阴影 |
+| 📌 桌面友好 | 始终置顶；透明区域鼠标穿透，只有点到蛙身才触发；不抢焦点、无任务栏图标、不进 Alt-Tab、无托盘 |
+| ⌨️ 唯一退出方式 | 全局热键 `Ctrl+Alt+Q`，无论焦点在哪个程序都有效 |
+| 🔄 开机自启 | 首次运行自动安装到 `%LOCALAPPDATA%\FrogPet` 并写入 `HKCU\...\CurrentVersion\Run` |
+| 🖥️ 多显示器 | 默认在鼠标所在屏活动，偶尔跳去相邻屏幕，拖拽可跨屏搬家 |
+| 🔒 隐私安全 | 完全离线、不联网、不收集数据、只写 HKCU 注册表（无需管理员权限） |
 
-> ⚠️ 发给别人前，请告知对方：**按 `Ctrl+Alt+Q` 退出**；**卸载运行 `uninstall.bat`**。请仅在对方知情同意的电脑上使用。
+---
 
-## 目录结构
+## 🚀 快速开始
 
-```
-FrogPet/
-├── main.py              # 入口：单实例、日志、首次安装、热键、主窗口
-├── pet_window.py        # 透明置顶窗口、状态机(待机/起跳/腾空/落地/交互)、点击穿透
-├── animation.py         # 素材加载、镜像/alpha 缓存、缓动函数
-├── hotkey.py            # Ctrl+Alt+Q 全局热键 (Win32 RegisterHotKey, 无第三方依赖)
-├── autostart.py         # HKCU Run 自启 + 首次安装(复制到 LOCALAPPDATA 后重启自身)
-├── config.py            # 配置读写 (%LOCALAPPDATA%\FrogPet\config.json)
-├── paths.py             # 路径工具 (兼容 PyInstaller onefile 的 _MEIPASS)
-├── build.bat            # 一键打包脚本
-├── uninstall.bat        # 一键卸载 (结束进程 + 删自启 + 删程序目录)
-├── assets/
-│   ├── frog/            # frog_idle / frog_blink / frog_puffed / frog_jump.png
-│   │                    # + shadow.png + frog.ico   (640x640 RGBA 主图)
-│   └── sounds/          # croak1~3.wav (程序合成的轻柔蛙鸣, 峰值 0.22)
-├── tools/
-│   ├── render_frog.py   # 参数化青蛙渲染器 (生成 assets/frog/*)
-│   ├── make_sounds.py   # 蛙鸣合成器 (生成 assets/sounds/*)
-│   └── test_pet.ps1     # 自动化验收: 点击/跳跃/热键退出
-└── dist/
-    └── FrogPet.exe      # 打包产物 (单文件, ~47MB)
-```
+### 源码运行
 
-## 快速开始
-
-### 运行（源码）
-
-```bat
-:: 推荐 Python 3.11+ (本项目在 3.12 验证)
+```bash
+# Python 3.11+（3.12 已验证）
 pip install PySide6
 python main.py
 ```
 
-### 打包（生成 dist\FrogPet.exe）
+### 打包为单文件 exe
 
-```bat
+```bash
 pip install PySide6 pyinstaller
-build.bat
-:: 或直接执行:
+build.bat        # 或手动执行下方命令
+```
+
+<details>
+<summary>完整 PyInstaller 命令（点击展开）</summary>
+
+```bash
 python -m PyInstaller --noconsole --onefile --clean -y --name FrogPet ^
   --icon assets\frog\frog.ico --add-data "assets;assets" ^
   --exclude-module PySide6.QtQml --exclude-module PySide6.QtQuick ^
@@ -71,80 +56,104 @@ python -m PyInstaller --noconsole --onefile --clean -y --name FrogPet ^
   main.py
 ```
 
-> 想进一步降低杀软误报可改用 `--onedir`（生成目录版，误报率更低），或对 exe 做代码签名。
+> 想进一步降低杀软误报率，可改用 `--onedir` 目录版打包，或对 exe 做代码签名。
 
-### 分发与卸载
+</details>
 
-- 把 `dist\FrogPet.exe` 发给对方 → 双击 → 青蛙出现并已设好开机自启。
-- 退出：`Ctrl+Alt+Q`（只退出本次运行，自启保留）。
-- 彻底卸载：运行 `uninstall.bat`（删除自启项 + `%LOCALAPPDATA%\FrogPet`）。
+### 分发给朋友
 
-### 配置项
+1. 把 `dist\FrogPet.exe` 发给对方，双击即用（自动安装 + 开机自启）；
+2. **务必告知对方**：按 `Ctrl+Alt+Q` 退出；彻底卸载运行 `uninstall.bat`；
+3. 请仅在对方知情同意的电脑上使用。
 
-安装目录 `%LOCALAPPDATA%\FrogPet\config.json`（首次运行自动生成）：
+### 卸载
 
-```json
-{
-  "size": 170,          // 青蛙显示高度 px，建议 120~220
-  "jump_min": 2.0,      // 跳跃间隔下限（秒）
-  "jump_max": 6.0,      // 跳跃间隔上限（秒）
-  "sound": true,        // 点击/落水是否发声
-  "bubbles": true,      // 气泡文字开关
-  "multi_screen": true, // 是否允许跳到其他显示器
-  "shadow": true,       // 接触阴影
-  "pond": true          // 脚下小池塘与落水水花
-}
-```
-
-改完保存，重启程序生效。
+运行 `uninstall.bat`：结束进程 → 删除自启项（`HKCU\...\Run\FrogPet`）→ 删除程序目录 `%LOCALAPPDATA%\FrogPet`。
 
 ---
 
-## 素材规格
+## ⚙️ 配置
 
-### 当前实现：姿态帧方案（4 帧 + 覆盖层）
+配置文件位于 `%LOCALAPPDATA%\FrogPet\config.json`，首次运行自动生成，改完重启程序生效：
 
-本项目的动画 = **少量关键姿态帧 + 程序化变形**（缩放/挤压/旋转/交叉淡化），比逐帧序列更小巧且帧间完全一致。
-
-| 文件 | 内容 | 规格要求 |
+| 键 | 默认值 | 说明 |
 |---|---|---|
-| `assets/frog/frog_idle.png` | 待机坐姿（睁眼） | 640×640 RGBA 透明 PNG |
-| `assets/frog/frog_blink.png` | 闭眼（覆盖层） | 同上，**与 idle 仅眼睛不同** |
-| `assets/frog/frog_puffed.png` | 鼓腮鸣囊（覆盖层） | 同上，**与 idle 仅喉部不同** |
-| `assets/frog/frog_jump.png` | 腾空伸展 | 同上，脚底与 idle 大致同一基准线 |
-| `assets/frog/shadow.png` | 接触阴影 | 480×160 RGBA |
-| `assets/frog/frog.ico` | 图标 | 多尺寸 16~256 |
-
-硬性约定：
-
-1. **透明通道必须干净**：PNG-32（RGBA），蛙体外 alpha=0，边缘无白边/彩边；
-2. **脚底基准线一致**：四帧中脚底都在源图同一高度（当前实现为 y≈608/640），否则落地会"陷进桌面"或"悬空"；
-3. **比例一致**：四帧蛙身大小必须相同（同一只蛙的连续动作，不是四张独立画）；
-4. **显示尺寸**：源图整体缩放到 `config.size`（120~220px），源图越大缩小后越清晰，建议 ≥512px；
-5. **朝向**：正面视角即可；程序通过水平镜像区分左右（若素材侧脸，请统一朝左或朝右，程序会镜像）。
-
-### 可选升级：序列帧方案
-
-如果想换成逐帧动画（更细腻），目录约定：
-
-```
-assets/frog/
-├── idle/idle_000.png ... idle_023.png   # 呼吸循环 24帧 @12fps
-├── jump/jump_000.png ... jump_011.png   # 起跳-腾空-落地 12帧 @24fps
-└── blink/blink_000.png ... blink_005.png
-```
-
-在 `animation.py` 的 `Sprites` 中把"单图"换成"目录帧列表"，`pet_window.py` 的 `_pose_mix` 返回帧号即可，窗口逻辑无需改动。
+| `size` | `170` | 青蛙显示高度（px），建议 120~220 |
+| `jump_min` / `jump_max` | `2.0` / `6.0` | 跳跃间隔随机范围（秒） |
+| `sound` | `true` | 蛙鸣与落水声开关 |
+| `bubbles` | `true` | 气泡文字开关 |
+| `multi_screen` | `true` | 是否允许跳去其他显示器 |
+| `shadow` | `true` | 接触阴影开关 |
+| `pond` | `true` | 池塘与水花总开关 |
 
 ---
 
-## AI 绘图提示词（生成写实青蛙素材）
+## 📁 目录结构
 
-> 生成后需要抠图（透明背景）。建议用支持透明的模型（SD + RemBG / DALL·E 透明输出 / remove.bg），
-> 或生成纯品红/纯白背景后用 `tools/` 里的色键思路处理。**同一组素材务必同种子/同模型/同参数生成**，
-> 或先生成 idle 再以它为底图 img2img 改姿态，保证是"同一只蛙"。
+```
+FrogPet/
+├── main.py              # 入口：单实例、日志、首次安装、热键、主窗口
+├── pet_window.py        # 透明置顶窗口、跳跃/拖拽状态机、点击穿透、池塘与水花
+├── animation.py         # 素材加载、镜像与 alpha 缓存、缓动函数
+├── hotkey.py            # Ctrl+Alt+Q 全局热键（Win32 RegisterHotKey，无第三方依赖）
+├── autostart.py         # HKCU 开机自启 + 首次安装（复制到 LOCALAPPDATA 后重启自身）
+├── config.py            # 配置读写
+├── paths.py             # 路径工具（兼容 PyInstaller onefile 的 _MEIPASS）
+├── build.bat            # 一键打包
+├── uninstall.bat        # 一键卸载
+├── assets/
+│   ├── frog/            # 四帧姿态 PNG（640×640 透明）+ 阴影 + 图标
+│   └── sounds/          # 合成蛙鸣 croak1~3.wav + 落水声 splash.wav
+├── tools/
+│   ├── render_frog.py   # 参数化青蛙渲染器（生成 assets/frog/*）
+│   ├── make_sounds.py   # 蛙鸣/水声合成器（生成 assets/sounds/*）
+│   ├── make_preview.py  # 生成 README 预览图
+│   └── test_pet.ps1     # 自动化验收（点击/拖拽/跳跃/热键退出）
+└── docs/
+    └── preview.png      # 预览图
+```
 
-**基础角色（每条提示词都带上，保持一致性）：**
+---
+
+## 🎨 素材规格与 AI 绘图提示词
+
+### 当前方案：4 姿态帧 + 程序化变形
+
+动画 = 少量关键姿态 + 运行时缩放/挤压/旋转/交叉淡化，比逐帧序列更小、帧间完全一致。
+
+| 文件 | 内容 | 要求 |
+|---|---|---|
+| `frog_idle.png` | 待机坐姿（睁眼） | 640×640 RGBA 透明 PNG |
+| `frog_blink.png` | 闭眼覆盖层 | 与 idle **仅眼睛不同** |
+| `frog_puffed.png` | 鼓腮覆盖层 | 与 idle **仅喉部不同** |
+| `frog_jump.png` | 腾空伸展 | 脚底与 idle 同一基准线 |
+| `shadow.png` | 接触阴影 | 480×160 RGBA |
+
+**硬性约定**：
+
+1. PNG-32 透明通道干净，蛙体外 alpha=0，边缘无白边彩边；
+2. 四帧**脚底基准线一致**（当前实现为 y≈608/640），否则落地会悬空或陷入桌面；
+3. 四帧必须是**同一只蛙**的连续姿态（同大小、同视角、同光照）；
+4. 运行时缩放到 `size`（120~220px），源图 ≥512px 保证清晰；
+5. 统一朝向（正面或统一侧脸均可，程序会水平镜像）。
+
+### 可选升级：逐帧序列
+
+想换逐帧动画时按此目录组织，在 `animation.py` 的 `Sprites` 改为加载帧列表即可：
+
+```
+assets/frog/idle/idle_000.png ... idle_023.png    # 呼吸循环 24帧 @12fps
+assets/frog/jump/jump_000.png ... jump_011.png    # 12帧 @24fps
+assets/frog/blink/blink_000.png ... blink_005.png
+```
+
+### AI 绘图提示词
+
+> 生成后需抠成透明背景（SD + RemBG / remove.bg，或支持透明的模型）。
+> **保证四帧是同一只蛙的关键**：固定同一 seed / 同模型 / 同参数；或先生成 idle，
+> 再以 idle 为底图 img2img（重绘幅度 0.3~0.5）只改姿态。提示词用英文效果更好：
+
+**基础角色（每帧都带，保持一致性）：**
 
 ```text
 Use case: photorealistic-natural
@@ -165,9 +174,9 @@ Constraints: whole frog fully inside frame, centered, feet clearly visible,
 Avoid: cartoon, chibi, oversized head, human-like expression, blur, cluttered background
 ```
 
-**逐姿态追加描述（替换 Primary request 的动作部分）：**
+**逐姿态追加：**
 
-| 帧 | 追加动作描述 |
+| 帧 | 追加描述 |
 |---|---|
 | `frog_idle` | `sitting upright on its haunches, front legs planted straight, eyes open, calm relaxed pose` |
 | `frog_blink` | `identical pose and framing as the idle shot, eyes fully closed, smooth eyelids, everything else pixel-identical` |
@@ -178,38 +187,39 @@ Avoid: cartoon, chibi, oversized head, human-like expression, blur, cluttered ba
 
 ```text
 cartoon, chibi, kawaii sticker style, 2D flat, painting, sketch, deformed legs,
-extra limbs, missing eyes, red eyes (恐怖向), open mouth teeth, wet floor, shadow,
+extra limbs, missing eyes, scary red eyes, open mouth teeth, wet floor, shadow,
 background scenery, gradient background, text, watermark, jpeg artifacts
 ```
 
-**实用技巧：**
-
-- 眼睛是最容易翻车的地方： horizontally-long pupils（横向瞳孔）比竖瞳/圆瞳更像真蛙；
-- 用 `same frog, same camera, only change ...` 的 img2img（低重绘幅度 0.3~0.5）做其余三帧；
-- 生成后裁剪到内容包围盒、统一缩放到 640×640、把脚底对齐到 y≈608，再覆盖 `assets/frog/` 同名文件即可，无需改代码；
-- 重跑 `tools/render_frog.py` 会**重新生成占位素材**（会覆盖同目录文件），替换素材后不要再运行它。
+**替换方法**：裁剪到内容包围盒 → 统一缩放 640×640 → 脚底对齐 y≈608 → 覆盖 `assets/frog/` 同名文件，无需改代码。
+⚠️ 注意不要重新运行 `tools/render_frog.py`，它会用占位素材覆盖你的 AI 素材。
 
 ---
 
-## 行为/技术要点（写给改代码的人）
+## 🔧 技术实现要点
 
-- **状态机**：`pet_window.py` 中 `IDLE → CROUCH → JUMP → LAND → IDLE`，点击/拖拽进入 `INTERACT/DRAG`；30ms 定时器驱动，位置沿抛物线 `A→B - (0, 4h·t(1-t))` 插值。
-- **拖拽**：按下记录抓取偏移，移动超过 8px 进入 `DRAG`（窗口实时跟随光标），松手夹回屏幕范围内并触发落地缓冲 + 水花；未移动的按下-松开视为点击。
-- **池塘与水花**：池塘是纯 QPainter 绘制（岸边环 + 径向渐变水面 + 荷叶/石子 + 涟漪圈），画在地面点（跳跃时与阴影一样留在地面）；水珠粒子带重力、涟漪环扩散渐隐，起跳小溅、落地大溅。
-- **点击穿透**：30ms 轮询光标位置 → 逆变换回姿态源图采样 alpha → 动态增删 `WS_EX_TRANSPARENT`（`WS_EX_LAYERED` 由 Qt 半透明窗口自带），因此"透明处穿透、蛙身可点"。
-- **不抢焦点**：`WA_ShowWithoutActivating` + `WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW`（后者同时把它移出 Alt-Tab 和任务栏）。
-- **全局热键**：`RegisterHotKey(MOD_CONTROL|MOD_ALT, 'Q')` + 独立 `GetMessage` 线程，`WM_HOTKEY` 通过 Qt 信号回到主线程退出；不依赖 keyboard/pynput，无需管理员。
-- **开机自启**：仅写 `HKCU\...\Run`，值为安装副本 `"C:\Users\<user>\AppData\Local\FrogPet\FrogPet.exe"`；热键退出不清除它。
-- **首次安装**：frozen 状态下运行 `dist\FrogPet.exe` → 复制自身到 `%LOCALAPPDATA%\FrogPet` → 写自启 → `DETACHED_PROCESS` 重启安装副本 → 原进程退出。
-- **声音**：`winsound.PlaySound(SND_ASYNC)` 播放预合成的轻柔蛙鸣（3 个变体，随机挑选）；想换声音直接替换 `assets/sounds/croak*.wav`（16bit PCM mono 44.1kHz）。
+- **状态机**：`IDLE → CROUCH → JUMP → LAND → IDLE`，点击/拖拽进入 `INTERACT/DRAG`；30ms 定时器驱动，位置沿抛物线 `A→B - (0, 4h·t(1-t))` 插值。
+- **点击穿透**：30ms 轮询光标位置，逆变换回姿态源图采样 alpha，动态增删 `WS_EX_TRANSPARENT`——透明处穿透、蛙身可交互（启动时强制初始化该标志，避免整窗挡点击）。
+- **拖拽**：按下记录抓取偏移，移动超 8px 进入 DRAG，窗口实时跟随光标；松手夹回屏幕范围并触发落地水花；未移动视为点击。
+- **池塘与水花**：QPainter 绘制（岸边环 + 径向渐变水面 + 荷叶/石子 + 涟漪圈），画在"地面点"上，跳跃时与阴影一样留在地面；水珠粒子带重力，涟漪环扩散渐隐。
+- **不抢焦点**：`WA_ShowWithoutActivating` + `WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW`（后者同时移出 Alt-Tab 与任务栏）。
+- **全局热键**：`RegisterHotKey(MOD_CONTROL|MOD_ALT, 'Q')` + 独立 GetMessage 线程，`WM_HOTKEY` 经 Qt 信号回主线程退出；不依赖 keyboard/pynput，无需管理员。
+- **首次安装**：frozen 状态下运行 → 复制自身到 `%LOCALAPPDATA%\FrogPet` → 写自启 → `DETACHED_PROCESS` 重启安装副本 → 原进程退出。
+- **声音**：`winsound` 异步播放预合成 wav（蛙鸣 3 变体 + 落水声，峰值 ≤0.22，轻柔不刺耳）。
 - **日志**：`%LOCALAPPDATA%\FrogPet\log.txt`，排查问题先看它。
 
-## 常见问题
+## ❓ 常见问题
 
 | 现象 | 处理 |
 |---|---|
 | 双击没反应 | 查 `%LOCALAPPDATA%\FrogPet\log.txt`；确认不是被杀软静默隔离 |
-| Ctrl+Alt+Q 无效 | 该组合键被其他软件注册；关闭占用者后重启 FrogPet（日志有 `RegisterHotKey failed` 记录） |
-| SmartScreen 提示 | 点"仍要运行"；或用 `--onedir` 重打包/签名 |
-| 青蛙被全屏游戏挡住 | 独占全屏会盖住一切置顶窗口，属系统行为；无边框/窗口化游戏不受影响 |
+| `Ctrl+Alt+Q` 无效 | 组合键被其他软件占用；关闭占用者后重启 FrogPet（日志有 `RegisterHotKey failed`） |
+| SmartScreen 提示 | 点"仍要运行"；或用 `--onedir` 重打包 / 代码签名 |
+| 被全屏游戏挡住 | 独占全屏会盖住一切置顶窗口，属系统行为；无边框/窗口化游戏不受影响 |
 | 想暂时关掉自启 | 任务管理器 → 启动应用 → 禁用 FrogPet，或运行 uninstall.bat |
+| 青蛙出现在副屏 | 它生成在鼠标所在屏，拖回来即可 |
+
+## 📜 许可与使用边界
+
+- 仅供学习交流与个人使用；**仅可在电脑所有者知情同意的前提下安装使用**。
+- 本程序刻意保持了"完全可控"：可见的退出热键、一键卸载、无任何隐藏行为——请保留这些设计。
